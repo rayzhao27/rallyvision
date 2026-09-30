@@ -1,0 +1,5 @@
+# Local Apple Silicon Mac only: Core ML export, validation and benchmarking.
+# Do NOT install these in Colab.
+-r requirements.txt
+
+coremltools>=8.0

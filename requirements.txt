@@ -1,0 +1,17 @@
+# Core runtime. Works on both Colab (CUDA) and a local Apple Silicon Mac.
+#
+# torch/torchvision are intentionally unpinned: Colab ships a CUDA build that
+# matches its driver, and pinning here would force a multi-GB reinstall.
+torch>=2.1
+torchvision>=0.16
+
+numpy>=1.24
+opencv-python-headless>=4.8
+PyYAML>=6.0
+tqdm>=4.65
+pandas>=2.0
+matplotlib>=3.7
+scipy>=1.10
+
+# Optional dataset sources; import-guarded at call sites.
+gdown>=5.0
