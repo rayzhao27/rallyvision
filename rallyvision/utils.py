@@ -38,6 +38,12 @@ def worker_init_fn(worker_id: int) -> None:
     seed = (base + worker_id) % (2**32)
     np.random.seed(seed)
     random.seed(seed)
+    # Each worker gets a forked copy of the dataset, including its augmentor's
+    # private RNG; without reseeding, every worker draws the same augmentations.
+    info = torch.utils.data.get_worker_info()
+    augmentor = getattr(info.dataset, "augmentor", None) if info is not None else None
+    if augmentor is not None:
+        augmentor.rng.seed(seed)
 
 
 def seed_generator(seed: int) -> torch.Generator:

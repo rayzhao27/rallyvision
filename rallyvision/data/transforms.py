@@ -97,7 +97,12 @@ class StackAugmentor:
             alpha = 1.0 + self.rng.uniform(-cfg.contrast, cfg.contrast) if cfg.contrast > 0 else 1.0
             beta = self.rng.uniform(-cfg.brightness, cfg.brightness) * 255.0 if cfg.brightness > 0 else 0.0
             if abs(alpha - 1.0) > 1e-6 or abs(beta) > 1e-6:
-                out = [cv2.convertScaleAbs(f, alpha=alpha, beta=beta) for f in out]
+                # Clip to [0, 255]; cv2.convertScaleAbs takes |x|, which brightens
+                # pixels pushed below zero instead of saturating them to black.
+                out = [
+                    np.clip(np.rint(f.astype(np.float32) * alpha + beta), 0, 255).astype(np.uint8)
+                    for f in out
+                ]
 
         return out, xy
 

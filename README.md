@@ -27,7 +27,7 @@ The project treats **honest evaluation as a first-class feature**: the train/val
 | p90 localization error | 2.29 px |
 | Precision / Recall / F1 | 0.9783 / 0.7865 / **0.8720** |
 
-Errors are measured in **original 1280×720 pixels**, not on the 640×360 network grid. Accuracy@5px ≈ accuracy@20px, which is the headline finding: **when the model fires, it is essentially always sub-pixel-to-2px accurate; every remaining error is a missed detection, not a mislocalization.** See [Threshold and Confidence Analysis](#threshold-and-confidence-analysis).
+All pixel errors, including the median error and accuracy@Npx, are measured at the **640×360 evaluation resolution**, not in 720p source pixels (1 px here ≈ 2 px at 1280×720). Accuracy@Npx is the fraction of **visible-ball** frames where the detected peak lies within N px of ground truth; a missed detection counts as a failure. Accuracy@5px ≈ accuracy@20px, which is the headline finding: **when the model fires, it is essentially always sub-pixel-to-2px accurate; every remaining error is a missed detection, not a mislocalization.** See [Threshold and Confidence Analysis](#threshold-and-confidence-analysis).
 
 **On-device inference (Apple M3 Pro, Core ML fp16, 1×9×360×640)**
 
@@ -272,8 +272,8 @@ focal loss (train)          │          peak extraction (eval / inference)
 
 **Metrics** (`rallyvision/metrics.py`)
 
-- Errors converted back to **original frame pixels** via the per-clip scale factors stored in each sample
-- `accuracy@Npx` counts a sample correct when the ball is visible, detected, and within N px — or when the ball is invisible and nothing was detected
+- Errors are scaled by the per-clip factors stored in each sample; with cached frames (as in the reported run) those factors are 1, so errors are in **640×360 evaluation pixels**
+- `accuracy@Npx` is computed over frames where the ball is **visible** only: a frame counts as correct when the detected peak is within N px of ground truth, and a missed detection counts as a failure
 - Precision/recall/F1 at a 10 px tolerance, plus mean/median/p90/max error and RMSE
 - Per-sample records are retained for the best/worst prediction grids and a CSV dump
 
@@ -298,8 +298,8 @@ focal loss (train)          │          peak extraction (eval / inference)
 **Prerequisites**
 
 ```bash
-git clone https://github.com/rayzhao27/rallyvision-test.git
-cd rallyvision-test
+git clone https://github.com/rayzhao27/rallyvision.git
+cd rallyvision
 ```
 
 ```bash
@@ -503,7 +503,7 @@ python scripts/train_ball_tracker.py \
 | min_blob_area | 2 px |
 | tolerances_px | 5, 10, 20 |
 | pr_tolerance_px | 10 |
-| error units | original frame pixels (1280×720) |
+| error units | 640×360 evaluation pixels |
 
 **Tracker Configuration**
 
@@ -556,7 +556,7 @@ The prepared frames live on Google Drive so they survive a disconnect, but readi
 **Setup**
 
 ```bash
-!git clone https://github.com/rayzhao27/rallyvision-test.git /content/rallyvision
+!git clone https://github.com/rayzhao27/rallyvision.git /content/rallyvision
 !pip install -q opencv-python-headless "PyYAML>=6" tqdm pandas matplotlib scipy gdown
 
 !python /content/rallyvision/scripts/download_dataset.py --set data.raw_dir=/content/drive/MyDrive/rallyvision/data/raw
@@ -582,7 +582,7 @@ The prepared frames live on Google Drive so they survive a disconnect, but readi
 
 ## Results
 
-**Held-out validation (3 unseen matches — game5, game8, game9; 5,429 samples)**
+**Held-out validation (3 unseen matches — game5, game8, game9; 5,429 samples; pixel errors at 640×360)**
 
 | Metric | Value |
 |---|---|

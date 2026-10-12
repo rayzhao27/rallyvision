@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Checkpoints and exported models
+*.pt
+*.pth
+*.ckpt
+*.mlpackage/
+*.mlmodel
+
+# Data, outputs and videos (anchored to the repo root so the
+# rallyvision/data/ package is not ignored)
+/data/
+/artifacts/
+/runs/
+/checkpoint/
+/checkpoints/
+/vid/
+/notebooks/
+*.mp4
+*.mov
