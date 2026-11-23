@@ -6,14 +6,18 @@
 
 **Court keypoint detection and homography estimation for tennis broadcast footage.**
 
-This module predicts 14 court keypoints as heatmaps and estimates a per-frame mapping between court coordinates and image pixels. It has its own data preparation, training, evaluation, and inference code. The [RallyVision pipeline](../../../README.md) uses valid court geometry to filter ball candidates and place predicted bounces on a top-down court.
+This module predicts 14 court keypoints as heatmaps and estimates a per-frame mapping between court coordinates and image pixels. It has its own data preparation, training, evaluation, and inference code. The [RallyVision pipeline](../../../) uses valid court geometry to filter ball candidates and place predicted bounces on a top-down court.
 
-**Demo: Court detection**  
-*The GIF below may take a moment to load.*
+
+
+> [!NOTE]
+> **Watch the court detection demo below.** The GIF may take a moment to load.
 
 ![Court geometry on tennis broadcast footage](./pics/court_tracking_demo.gif)
 
 *Alcaraz vs. Sinner broadcast footage. The points and court lines are projected from each frame's estimated homography; they are not necessarily individual keypoint detections. This is a qualitative example.*
+
+
 
 On 210 validation images, court v2 achieved **0.9823 keypoint F1** at a 5-pixel tolerance. Homography validity checks passed on all 210 images. These are validation results, not measurements of real-world bounce-location accuracy.
 
@@ -109,7 +113,7 @@ With the package and court weights configured, run the standalone module from th
 python -m rallyvision.court_detection.inference.calibrate --video match.mp4 --out court.npz
 ```
 
-The output contains per-frame homographies, validity flags, reasons, and fitting errors. Model availability and full-pipeline setup are described in the [main README](../../../README.md#run-locally).
+The output contains per-frame homographies, validity flags, reasons, and fitting errors. Model availability and full-pipeline setup are described in the [main README](../../../#run-locally).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

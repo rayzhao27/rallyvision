@@ -6,14 +6,18 @@
 
 **Tennis bounce event detection using visual features and temporal context.**
 
-This module predicts when a bounce occurs directly from video. Its final model uses an externally pretrained E2E-Spot visual backbone and a Temporal Transformer trained for this project. The event detector does not require ball tracks or court calibration; the [RallyVision pipeline](../../../README.md) uses those separate outputs to estimate where a detected bounce occurred.
+This module predicts when a bounce occurs directly from video. Its final model uses an externally pretrained E2E-Spot visual backbone and a Temporal Transformer trained for this project. The event detector does not require ball tracks or court calibration; the [RallyVision pipeline](../../../) uses those separate outputs to estimate where a detected bounce occurred.
 
-**Demo: Bounce event detection**  
-*The GIF below may take a moment to load.*
+
+
+> [!NOTE]
+> **Watch the bounce detection demo below.** The GIF may take a moment to load.
 
 ![Bounce event detection on tennis broadcast footage](./pics/bounce_event_demo.gif)
 
 *Alcaraz vs. Sinner broadcast footage. The label shows a predicted bounce event and its predicted court side. The circle marks a ball position selected from the separate tracking output near that event; it remains in place briefly for readability. This visualization is qualitative and does not validate bounce-location accuracy.*
+
+
 
 On the held-out tennis test set, Transformer v3 achieved **0.759 ± 0.028 bounce F1** across three seeds at a tolerance of ±4 frames. The validation-selected seed achieved **0.785 F1**, compared with **0.653** for the E2E-Spot GRU under the same evaluation protocol.
 
@@ -84,7 +88,7 @@ Error analysis found both duplicate or shifted predictions and missed events tha
 
 The early trajectory approach was developed on TrackNet footage, while the Alcaraz vs. Sinner demonstration presented different broadcast conditions, including frame rate and image scale. Such differences can change the apparent size and motion of the ball and were a reason to investigate distribution shift. The evidence does not isolate which difference caused any particular error; TrackNet itself also contains broadcast footage.
 
-Camera motion was another hypothesis. Per-frame court homographies were used to measure how much the court moved in the Sinner video. The court was effectively stationary during the examined point, and the camera began moving after its last annotated bounce. Compensating the ball positions made very little difference in that investigation, so an additional motion-compensation stage was not adopted. This finding applies to the examined point, not all broadcast videos. See the [court module's camera motion investigation](../court_detection/README.md#research-journey).
+Camera motion was another hypothesis. Per-frame court homographies were used to measure how much the court moved in the Sinner video. The court was effectively stationary during the examined point, and the camera began moving after its last annotated bounce. Compensating the ball positions made very little difference in that investigation, so an additional motion-compensation stage was not adopted. This finding applies to the examined point, not all broadcast videos. See the [court module's camera motion investigation](../court_detection/#research-journey).
 
 The final pipeline still estimates homography per frame: it uses court geometry to filter ball candidates and map detected events to court coordinates. That role is separate from compensating a trajectory for camera motion.
 
@@ -123,7 +127,7 @@ With the package, trained Transformer, and E2E-Spot code and pretrained tennis m
 python -m rallyvision.bounce_detection.inference.predict --video match.mp4 --out bounces.json
 ```
 
-This writes event predictions to `bounces.json` and per-frame probabilities to `bounces.npz`. The external dependency and model availability are described in the [main README](../../../README.md#run-locally).
+This writes event predictions to `bounces.json` and per-frame probabilities to `bounces.npz`. The external dependency and model availability are described in the [main README](../../../#run-locally).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -12,14 +12,18 @@ RallyVision explores how to analyze tennis broadcast footage through three indep
 
 The integrated pipeline combines their outputs to detect bounce events and estimate their locations on a top-down court. The project documents not only the final models, but also the diagnostics, oracle experiments, failed approaches, and engineering decisions that shaped them.
 
-**Demo: RallyVision in action**  
-*The GIF below may take a moment to load.*
+
+
+> [!NOTE]
+> **Watch RallyVision in action below.** The demo GIF may take a moment to load.
 
 ![RallyVision bounce detection demo](./pics/alcaraz_vs_sinner_bounces.gif)
 
 *Alcaraz vs. Sinner broadcast footage analyzed by RallyVision. The model detects 11 of the 12 annotated first bounces in this rally, missing the final drop shot bounce. Detected events are mapped onto a top-down court; the estimated locations have not been validated against ground truth and must not be used for line calling.*
 
-**See each subsystem in action on the same match footage: [Ball Tracking](./src/rallyvision/ball_tracking/README.md) · [Court Detection](./src/rallyvision/court_detection/README.md) · [Bounce Detection](./src/rallyvision/bounce_detection/README.md).**
+
+
+**See each subsystem in action on the same match footage: [Ball Tracking](./src/rallyvision/ball_tracking/) · [Court Detection](./src/rallyvision/court_detection/) · [Bounce Detection](./src/rallyvision/bounce_detection/).**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -39,9 +43,9 @@ The integrated pipeline combines their outputs to detect bounce events and estim
 
 RallyVision consists of three independent machine learning subsystems. Each can be trained, evaluated, and studied on its own; the final pipeline brings their predictions together without jointly training the models.
 
-- **[Ball Detection & Tracking](./src/rallyvision/ball_tracking/README.md)** uses a TrackNet-style heatmap model and motion-aware ball selection to estimate the ball’s trajectory.
-- **[Court Detection & Homography](./src/rallyvision/court_detection/README.md)** detects 14 court keypoints and estimates a per-frame transformation between image and court coordinates.
-- **[Bounce Event Detection](./src/rallyvision/bounce_detection/README.md)** uses a pretrained E2E-Spot visual backbone and a separately trained Temporal Transformer to identify bounce events directly from video.
+- **[Ball Detection & Tracking](./src/rallyvision/ball_tracking/)** uses a TrackNet-style heatmap model and motion-aware ball selection to estimate the ball’s trajectory.
+- **[Court Detection & Homography](./src/rallyvision/court_detection/)** detects 14 court keypoints and estimates a per-frame transformation between image and court coordinates.
+- **[Bounce Event Detection](./src/rallyvision/bounce_detection/)** uses a pretrained E2E-Spot visual backbone and a separately trained Temporal Transformer to identify bounce events directly from video.
 
 The integration pipeline uses court geometry to help filter ball candidates, then combines the predicted bounce times, ball positions, and valid homographies to estimate bounce locations on the court.
 

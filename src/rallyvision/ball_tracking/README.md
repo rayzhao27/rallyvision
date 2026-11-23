@@ -6,14 +6,18 @@
 
 **A heatmap-based tennis ball detector and tracker for broadcast video.**
 
-This module detects a small, fast-moving tennis ball with a TrackNet-style model and follows it using motion-aware selection. It includes data preparation, training, evaluation, inference, and diagnostic experiments. The final 1280×720 model is integrated with the court and bounce detection subsystems in the [RallyVision pipeline](../../../README.md).
+This module detects a small, fast-moving tennis ball with a TrackNet-style model and follows it using motion-aware selection. It includes data preparation, training, evaluation, inference, and diagnostic experiments. The final 1280×720 model is integrated with the court and bounce detection subsystems in the [RallyVision pipeline](../../../).
 
-**Demo: Ball tracking**  
-*The GIF below may take a moment to load.*
+
+
+> [!NOTE]
+> **Watch the ball tracking demo below.** The GIF may take a moment to load.
 
 ![Ball tracking demo](./pics/ball_tracking_1280.gif)
 
 *Alcaraz vs. Sinner broadcast footage. This visualization uses the 1280 model and the integrated pipeline's court gating and motion-aware ball selection. It is an illustrative example, not an accuracy measurement.*
+
+
 
 On the TrackNet validation split, the 1280 model achieved **0.960 F1 and 0.967 recall**, compared with **0.900 F1 and 0.870 recall** for the earlier 640 model. These results use different threshold-selection and decoder settings; see [Evaluation](#evaluation) for the comparison.
 
@@ -123,7 +127,7 @@ With the package and model weights configured, the standalone ball tracker can b
 python -m rallyvision.ball_tracking.inference.track_video --video match.mp4 --out ball.npz
 ```
 
-This standalone entry point uses motion-aware selection without the court gate. The complete pipeline and its current model availability are described in the [main README](../../../README.md#run-locally).
+This standalone entry point uses motion-aware selection without the court gate. The complete pipeline and its current model availability are described in the [main README](../../../#run-locally).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
