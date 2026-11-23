@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 import torch
 
-from rallyvision.models import build_model, check_input_size
-from rallyvision.models.tracknet import STRIDE, TrackNet
+from rallyvision.ball_tracking.model import build_model, check_input_size
+from rallyvision.common.tracknet import STRIDE, TrackNet
 
 
 def test_output_matches_input_resolution():

@@ -5,17 +5,17 @@ from pathlib import Path
 import pytest
 import torch
 
-from rallyvision.data.dataset import build_dataloader, build_dataset
-from rallyvision.data.labels import LabelError, parse_label_csv
-from rallyvision.data.manifest import DatasetManifest
-from rallyvision.data.prepare import (
+from rallyvision.ball_tracking.data.dataset import build_dataloader, build_dataset
+from rallyvision.ball_tracking.data.labels import LabelError, parse_label_csv
+from rallyvision.ball_tracking.data.manifest import DatasetManifest
+from rallyvision.ball_tracking.data.prepare import (
     PrepareError,
     assign_splits,
     game_from_clip_path,
     prepare_dataset,
     reassign_manifest_splits,
 )
-from rallyvision.data.transforms import AugmentConfig, StackAugmentor
+from rallyvision.ball_tracking.data.transforms import AugmentConfig, StackAugmentor
 
 
 # -- label parsing --------------------------------------------------------
@@ -49,7 +49,7 @@ def test_rejects_unrecognisable_header(tmp_path: Path):
 
 # -- preparation ----------------------------------------------------------
 def test_download_reuses_existing_labelled_dataset(base_config, synthetic_raw):
-    from rallyvision.data.sources import download_dataset
+    from rallyvision.ball_tracking.data.sources import download_dataset
 
     base_config["data.source"] = "gdrive"
     base_config["data.gdrive_id"] = "should-not-be-fetched"
@@ -179,7 +179,7 @@ def test_game_id_is_the_clip_parent_folder():
 
 
 def _toy_clips(n: int, game: str = "game") -> list:
-    from rallyvision.data.manifest import ClipRecord
+    from rallyvision.ball_tracking.data.manifest import ClipRecord
 
     clips = []
     for i in range(n):
@@ -208,7 +208,7 @@ def test_single_game_split_still_gets_a_val_set():
 
 
 def test_nested_wrapper_folder_splits_by_real_game():
-    from rallyvision.data.manifest import ClipRecord
+    from rallyvision.ball_tracking.data.manifest import ClipRecord
 
     clips = []
     for game, n in (("game1", 2), ("game2", 2)):
@@ -238,7 +238,7 @@ def test_nested_wrapper_folder_splits_by_real_game():
 
 
 def test_reassign_splits_repairs_an_all_train_manifest(base_config, tmp_path):
-    from rallyvision.data.manifest import ClipRecord, DatasetManifest
+    from rallyvision.ball_tracking.data.manifest import ClipRecord, DatasetManifest
 
     prepared = tmp_path / "prepared"
     prepared.mkdir()

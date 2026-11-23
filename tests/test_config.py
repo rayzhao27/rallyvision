@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from rallyvision.config import Config, ConfigError, load_config, parse_override, resolve_path
+from rallyvision.common.config import Config, ConfigError, load_config, parse_override, resolve_path
 
 
 def test_loads_repo_config(repo_root):
-    cfg = load_config(repo_root / "config.yaml")
+    cfg = load_config(repo_root / "configs" / "ball_tracking.yaml")
     assert cfg.project.name == "rallyvision"
     assert cfg.data.num_frames >= 1
     assert cfg.model.name in {"tracknet"}

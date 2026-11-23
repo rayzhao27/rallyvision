@@ -1,0 +1,222 @@
+# RallyVision - Phase 1: tennis ball tracker
+#
+# This is the single source of truth for defaults. Scripts and the Colab
+# notebook read from here; CLI flags override individual values.
+#
+# Environment split (intentional):
+#   * Training / evaluation / video inference  -> Google Colab GPU (CUDA)
+#   * Core ML export / validation / benchmark  -> local Apple Silicon Mac
+
+project:
+  name: rallyvision
+  # Root for every artifact that is not source code. On Colab this is
+  # typically pointed at a Google Drive folder so work survives a disconnect.
+  output_root: artifacts
+  seed: 1337
+
+# Colab notebook defaults. Ignored on the Mac unless you pass these paths
+# explicitly. The notebook calls `apply_persistent_storage` so checkpoints
+# land on Drive instead of the ephemeral `/content` disk.
+colab:
+  drive_root: /content/drive/MyDrive/rallyvision
+  raw_subdir: data/raw
+  prepared_subdir: data/prepared
+  output_subdir: artifacts
+  require_cuda: true
+
+runtime:
+  # auto -> cuda, then mps, then cpu. Explicit values: cuda | mps | cpu
+  device: auto
+  # Mixed precision. Only ever enabled on CUDA; silently ignored elsewhere.
+  amp: true
+  # cudnn.benchmark; helps when input shapes are static (they are).
+  cudnn_benchmark: true
+  # Fully deterministic algorithms. Slower; off by default.
+  deterministic: false
+  # Refuse to run a real (non-smoke) training job on mps/cpu. This encodes the
+  # "never train on the Mac" rule. Override with --allow-local-training.
+  require_cuda_for_training: true
+
+data:
+  # Where raw downloads land and where the prepared dataset is written.
+  raw_dir: data/raw
+  prepared_dir: data/prepared
+
+  # Dataset source. One of: local | gdrive | url | kaggle | synthetic
+  #
+  # Default is the community TrackNet tennis set (game*/Clip*/Label.csv + frames).
+  # Colab downloads it once onto Drive, then prepare_dataset.py indexes/resizes it.
+  # Re-runs skip the download if Label.csv files are already present.
+  source: gdrive
+  local_path: data/raw/tennis
+  # Official labelled tennis clips (folder, ~20k frames). Same ID used by
+  # yastrebksv/TrackNet: https://drive.google.com/drive/folders/11r0RUaQHX7I3ANkaYG4jOxXK1OYo01Ut
+  gdrive_id: 11r0RUaQHX7I3ANkaYG4jOxXK1OYo01Ut
+  gdrive_folder: true
+  url: null
+  kaggle_dataset: null
+
+  # Layout of the extracted dataset.
+  # Each clip is a directory of sequentially numbered frames plus a label CSV.
+  clip_glob: "game*/Clip*"
+  label_filename: Label.csv
+  frame_extensions: [".jpg", ".jpeg", ".png"]
+
+  # Split is done at the *game* level (not frame level) so that frames from the
+  # same rally never appear in both train and val. Game id is the clip parent
+  # folder (game1/Clip1), not a wrapper directory from gdown.
+  split:
+    strategy: by_game       # by_game | by_clip | random
+    val_fraction: 0.2
+    # Optional explicit hold-out, e.g. ["game9", "game10"]. Overrides fraction.
+    val_games: null
+
+  # Write resized copies of every frame during preparation. Strongly
+  # recommended on Colab: training stops re-decoding full-resolution JPEGs, and
+  # the prepared directory becomes small enough to cache on Drive.
+  cache_frames: false
+  cache_jpeg_quality: 92
+
+  # Network input geometry. Frames are resized to (height, width).
+  # Must be divisible by 8 (the encoder pools three times).
+  input_height: 360
+  input_width: 640
+  # Number of consecutive frames stacked as input (TrackNet-style).
+  num_frames: 3
+  # Frame stride within a stack (1 = consecutive frames).
+  frame_stride: 1
+
+  # Gaussian target heatmap.
+  heatmap:
+    # Heatmap resolution as a fraction of input. 1 = same size as input.
+    downsample: 1
+    sigma: 2.5
+    # Clamp the rendered gaussian to this radius (in heatmap px) for speed.
+    radius: 8
+
+  # Drop samples where the ball is not visible in the *last* frame of the
+  # stack. Keeping them (false) teaches the model to output an empty heatmap.
+  drop_invisible: false
+  # Fraction of invisible-ball samples to keep when drop_invisible is false.
+  invisible_keep_fraction: 1.0
+
+  augment:
+    enabled: true
+    horizontal_flip: 0.5
+    brightness: 0.2
+    contrast: 0.2
+    # Random translation as a fraction of frame size, applied to the whole stack.
+    translate: 0.05
+    scale: 0.05
+
+  loader:
+    batch_size: 8
+    num_workers: 4
+    pin_memory: true
+    persistent_workers: true
+    prefetch_factor: 2
+
+model:
+  name: tracknet
+  # Channel width multiplier for the VGG-style encoder/decoder.
+  width: 1.0
+  # Number of output heatmap channels. 1 = predict ball position for the last
+  # input frame only.
+  out_channels: 1
+  # Apply sigmoid inside the module. Kept True so the exported Core ML model is
+  # self-contained; the loss uses logits via `forward_logits`.
+  sigmoid_output: true
+  dropout: 0.0
+
+loss:
+  # bce | focal | mse | wbce
+  name: focal
+  # Positive-class weight for wbce / bce.
+  pos_weight: 100.0
+  focal:
+    alpha: 2.0
+    beta: 4.0
+    # Target values at or above this count as true positives. The gaussian peak
+    # is slightly below 1.0 when the ball centre falls between pixels.
+    pos_threshold: 0.9
+
+optim:
+  name: adamw          # adamw | adam | sgd
+  lr: 0.001
+  weight_decay: 0.0001
+  momentum: 0.9        # sgd only
+  grad_clip_norm: 5.0
+
+scheduler:
+  # none | cosine | plateau | step
+  name: cosine
+  warmup_epochs: 1
+  min_lr: 0.00001
+  # plateau
+  patience: 3
+  factor: 0.5
+  # step
+  step_size: 10
+  gamma: 0.1
+
+train:
+  epochs: 30
+  # Stop early if the monitored metric has not improved for N epochs. 0 = off.
+  early_stopping_patience: 0
+  # Metric used to pick the best checkpoint.
+  monitor: val/accuracy_at_5px
+  monitor_mode: max     # max | min
+  # Save a `last.pt` every N epochs (also always saved at epoch end).
+  checkpoint_every: 1
+  # Keep the N most recent epoch checkpoints in addition to last/best. 0 = none.
+  keep_last_n: 0
+  log_every: 20
+  # Cap batches per epoch. null = full epoch. Used by the smoke test.
+  max_train_batches: null
+  max_val_batches: null
+  # Run validation every N epochs.
+  val_every: 1
+
+eval:
+  # Peak detection threshold on the predicted heatmap.
+  detection_threshold: 0.18
+  # Minimum connected-component area (in heatmap px) for a valid detection.
+  min_blob_area: 2
+  # Pixel tolerances (in *original* frame coordinates) for accuracy metrics.
+  tolerances_px: [5, 10, 20]
+  # The tolerance used for precision/recall/F1.
+  pr_tolerance_px: 10
+  batch_size: 16
+  # Save per-sample records alongside the aggregate metrics.
+  save_per_sample: true
+
+tracker:
+  # Post-processing across a video: reject implausible jumps and interpolate
+  # short gaps.
+  max_jump_px: 100
+  max_gap_frames: 4
+  interpolate_gaps: true
+  smooth_window: 0
+
+inference:
+  detection_threshold: 0.18
+  # Draw the last N detections as a trail.
+  trail_length: 8
+  draw_heatmap: false
+  output_fps: null      # null = keep source fps
+  batch_size: 8
+
+coreml:
+  # Local Mac only.
+  precision: fp16          # fp32 | fp16
+  minimum_deployment_target: iOS17
+  compute_units: ALL       # ALL | CPU_AND_GPU | CPU_AND_NE | CPU_ONLY
+  output_dir: artifacts/coreml
+  # Numerical validation tolerances (torch vs Core ML).
+  validate:
+    num_samples: 8
+    max_abs_diff: 0.02
+    max_peak_distance_px: 2.0
+  benchmark:
+    warmup_iters: 10
+    iters: 100

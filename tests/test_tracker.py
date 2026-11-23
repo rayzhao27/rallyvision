@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from rallyvision.tracker import BallTracker, build_tracker, interpolate_gaps, track_statistics
+from rallyvision.ball_tracking.inference.tracker import BallTracker, build_tracker, interpolate_gaps, track_statistics
 
 
 def test_clean_track_passes_through():

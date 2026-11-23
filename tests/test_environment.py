@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from rallyvision.environment import (
+from rallyvision.common.environment import (
     EnvironmentError,
     apply_persistent_storage,
     in_colab,
@@ -50,8 +50,8 @@ def test_in_colab_is_false_on_this_machine():
 
 
 def test_config_exposes_colab_defaults(repo_root):
-    from rallyvision.config import load_config
+    from rallyvision.common.config import load_config
 
-    cfg = load_config(repo_root / "config.yaml")
+    cfg = load_config(repo_root / "configs" / "ball_tracking.yaml")
     assert cfg.colab.require_cuda is True
     assert "MyDrive" in str(cfg.colab.drive_root)

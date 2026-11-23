@@ -10,14 +10,14 @@ from __future__ import annotations
 
 import torch
 
-from rallyvision.data.dataset import build_dataloader, build_dataset
-from rallyvision.device import resolve_device
-from rallyvision.engine.evaluator import evaluate
-from rallyvision.engine.optim import build_optimizer, build_scheduler
-from rallyvision.engine.trainer import Trainer
-from rallyvision.losses import build_loss
-from rallyvision.models import build_model
-from rallyvision.paths import RunPaths
+from rallyvision.ball_tracking.data.dataset import build_dataloader, build_dataset
+from rallyvision.common.device import resolve_device
+from rallyvision.ball_tracking.evaluation.evaluator import evaluate
+from rallyvision.ball_tracking.training.engine.optim import build_optimizer, build_scheduler
+from rallyvision.ball_tracking.training.engine.trainer import Trainer
+from rallyvision.ball_tracking.model.losses import build_loss
+from rallyvision.ball_tracking.model import build_model
+from rallyvision.common.paths import RunPaths
 
 
 def _trainer(cfg, manifest, run_dir):
@@ -146,7 +146,7 @@ def test_evaluation_produces_the_expected_metric_keys(base_config, prepared_data
 
 
 def test_evaluate_and_save_writes_json_and_csv(base_config, prepared_dataset, tmp_path):
-    from rallyvision.engine.evaluator import evaluate_and_save
+    from rallyvision.ball_tracking.evaluation.evaluator import evaluate_and_save
 
     trainer = _trainer(base_config, prepared_dataset, tmp_path / "run")
     out = tmp_path / "metrics"

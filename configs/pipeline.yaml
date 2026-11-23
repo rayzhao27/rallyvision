@@ -1,0 +1,15 @@
+# RallyVision integration pipeline (video -> ball track, court homography, bounce events, court-space bounces).
+# Values are those of the reference demo (alcaraz_vs_sinner, Transformer v3); change them only on purpose.
+
+ball:
+  input_scale: 2              # ball model input = 2 x 640x360 = 1280x720
+  threshold: 0.16             # chosen on the TrackNet train games
+court:
+  threshold: 0.2              # keypoint threshold, chosen on val
+bounce:
+  decoding: checkpoint        # threshold 0.6 and NMS window 15 frames, stored in the v3 checkpoint (chosen on val)
+fusion:
+  window: 2                   # video frames around a predicted bounce searched for the ball's lowest image point
+render:
+  layout: side                # side | pip
+  out_height: 720

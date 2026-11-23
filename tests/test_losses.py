@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 import torch
 
-from rallyvision.data.heatmap import render_gaussian
-from rallyvision.losses import FocalHeatmapLoss, WeightedBCELoss, build_loss
+from rallyvision.common.heatmap import render_gaussian
+from rallyvision.ball_tracking.model.losses import FocalHeatmapLoss, WeightedBCELoss, build_loss
 
 
 def _target(height=32, width=48, x=20.0, y=10.0):

@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 import torch
 
-from rallyvision.data.heatmap import render_gaussian
-from rallyvision.metrics import BallMetrics, build_metrics, format_metrics
+from rallyvision.common.heatmap import render_gaussian
+from rallyvision.ball_tracking.evaluation.metrics import BallMetrics, build_metrics, format_metrics
 
 H, W = 32, 48
 

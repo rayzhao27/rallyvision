@@ -1,38 +1,37 @@
-# macOS
-.DS_Store
+# Local only: model weights and archived history
+/models/
+/local_archive/
 
-# Python
+# Local data and outputs (training writes data/ and artifacts/; the CLI writes results/)
+/data/
+/artifacts/
+/results/
+/tests/golden/
+*.mp4
+*.mov
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.csv
+*.log
+*.ipynb
+.env
+.env.*
+
+# Python and tools
 __pycache__/
 *.py[cod]
 *.egg-info/
 build/
 dist/
 .pytest_cache/
-
-# Virtual environments
+.ipynb_checkpoints/
 .venv/
 venv/
-env/
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
-
-# Checkpoints and exported models
-*.pt
-*.pth
-*.ckpt
-*.mlpackage/
-*.mlmodel
-
-# Data, outputs and videos (anchored to the repo root so the
-# rallyvision/data/ package is not ignored)
-/data/
-/artifacts/
-/runs/
-/checkpoint/
-/checkpoints/
-/vid/
-/notebooks/
-*.mp4
-*.mov
+.DS_Store
+._*
+__MACOSX/
+Thumbs.db

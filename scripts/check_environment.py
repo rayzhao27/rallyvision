@@ -1,51 +1,14 @@
-#!/usr/bin/env python3
-"""Print the runtime environment and, optionally, refuse to continue without CUDA.
+"""Moved to `rallyvision.common.check_environment` (module-first refactor, 2026-11-22).
 
-    python scripts/check_environment.py
-    python scripts/check_environment.py --require-cuda   # Colab training cells
-
-Does not train, download data, or touch a GPU beyond querying its name.
+This forwarder keeps `python scripts/check_environment.py` and imports of `check_environment` from archived experiments working.
 """
+import importlib
+import sys
+from pathlib import Path
 
-from __future__ import annotations
-
-import argparse
-
-from _common import add_config_args, add_device_args, build_config, fail, init_logging
-
-from rallyvision.environment import EnvironmentError, report_environment
-from rallyvision.logging_utils import banner
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    add_config_args(parser)
-    add_device_args(parser)
-    parser.add_argument(
-        "--require-cuda",
-        action="store_true",
-        help="exit non-zero if the resolved device is not CUDA (Colab training)",
-    )
-    args = parser.parse_args()
-    init_logging(args)
-    cfg = build_config(args)
-
-    try:
-        report = report_environment(cfg, device_override=args.device, require_cuda=args.require_cuda)
-    except EnvironmentError as exc:
-        fail(str(exc))
-        return 1
-
-    print()
-    print(banner("environment"))
-    print(report.format())
-    print()
-    if args.require_cuda:
-        print("CUDA is available. Safe to start training.")
-    elif not report.device.is_cuda:
-        print("No CUDA GPU. Full training will refuse to start; --smoke is allowed.")
-    return 0
-
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+_m = importlib.import_module("rallyvision.common.check_environment")
+globals().update({k: v for k, v in vars(_m).items() if not k.startswith("__")})
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _m.main()

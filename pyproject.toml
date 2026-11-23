@@ -5,18 +5,23 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "rallyvision"
 version = "0.1.0"
-description = "Tennis ball tracking for Apple Silicon deployment"
+description = "Tennis video analysis: ball tracking, court detection and bounce events, integrated into one pipeline"
 requires-python = ">=3.9"
 dynamic = ["dependencies"]
+
+[project.scripts]
+rallyvision = "rallyvision.pipeline.__main__:main"
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
 
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["rallyvision*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 addopts = "-q --timeout=300"
 markers = [
     "slow: tests that are too heavy for the default local run",

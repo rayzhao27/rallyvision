@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 import torch
 
-from rallyvision.device import (
+from rallyvision.common.device import (
     DeviceError,
     autocast_context,
     guard_training_device,

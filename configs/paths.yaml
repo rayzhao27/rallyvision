@@ -1,0 +1,29 @@
+# Where trained models and reference data live, relative to the repo root. Both folders are local only (not in git):
+#   models/                    the weights formal inference loads (the `rallyvision` CLI); it never trains
+#   local_archive/articrafts/  history: earlier checkpoints, experiment inputs and results
+
+ball_tracking:
+  model: models/ball_tracking/tracknet_1280.pt                  # formal: TrackNet at 1280x720 (fine-tuned from v3)
+  model_640_v3: local_archive/articrafts/best_original.pt       # history: TrackNet at 640x360 (v3)
+  tracknet_tracks_640_t018:                                     # per-frame TrackNet results used by the GBDT experiments
+    - local_archive/articrafts/bounce_inputs/train_t018_per_sample.csv
+    - local_archive/articrafts/diag/eval_t018/val_t018_per_sample.csv
+  tracknet_tracks_1280:
+    - local_archive/articrafts/ball_1280/hr1280_v1/eval640/train_per_sample.csv
+    - local_archive/articrafts/ball_1280/hr1280_v1/eval640/val_per_sample.csv
+  tracknet_labels: local_archive/articrafts/bounce_inputs/labels   # TrackNet dataset Label.csv files (ball + events)
+
+court_detection:
+  model: models/court_detection/court_keypoints_v2.pt           # formal keypoint model (video-level split)
+  model_v1_leaky_split: local_archive/articrafts/court/court_v1/best.pt   # history: v1, train/val leak through file names
+
+bounce_detection:
+  transformer_v3: models/bounce_detection/event_transformer_v3_seed1.pt   # formal: seed 1, best val macro F1
+  transformer_v2: local_archive/articrafts/event_transformer/run_v2/event_transformer.pt   # history
+  transformer_v1: local_archive/articrafts/event_transformer/run_v1/event_transformer.pt   # history
+  # Frozen visual backbone: E2E-Spot (Hong et al., ECCV 2022), pretrained by its authors, not trained here.
+  # External code + checkpoint, downloaded 2026-11-22. Two local patches to the checkout:
+  # np.int/np.float/np.bool -> int/float/bool (numpy >= 1.24), and in model/impl/gsm.py the zero padding uses
+  # torch.zeros_like instead of torch.cuda.FloatTensor (so it runs on MPS / CPU; same values).
+  e2e_spot_code: models/bounce_detection/e2e_spot/spot                              # github.com/jhong93/spot (BSD-3)
+  e2e_spot_model: models/bounce_detection/e2e_spot/models/tennis_rny008gsm_gru_rgb  # e2e-spot-models: checkpoint_041.pt + config.json

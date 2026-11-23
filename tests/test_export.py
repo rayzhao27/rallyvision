@@ -12,9 +12,9 @@ import platform
 import pytest
 import torch
 
-from rallyvision.export.coreml_export import CoreMLUnavailable, check_macos, trace_model
-from rallyvision.models import build_model
-from rallyvision.models.tracknet import TrackNet
+from rallyvision.ball_tracking.export.coreml_export import CoreMLUnavailable, check_macos, trace_model
+from rallyvision.ball_tracking.model import build_model
+from rallyvision.common.tracknet import TrackNet
 
 
 def _has_coremltools() -> bool:
@@ -72,8 +72,8 @@ def test_check_macos_blocks_non_mac_platforms():
 @pytest.mark.coreml
 @pytest.mark.slow
 def test_coreml_export_and_validation_round_trip(tmp_path):
-    from rallyvision.export.coreml_export import export_coreml
-    from rallyvision.export.coreml_validate import validate_coreml
+    from rallyvision.ball_tracking.export.coreml_export import export_coreml
+    from rallyvision.ball_tracking.export.coreml_validate import validate_coreml
 
     model = TrackNet(num_frames=3, width=0.125).eval()
     shape = (1, 9, 72, 128)

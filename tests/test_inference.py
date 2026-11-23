@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from rallyvision.data.synthetic import generate_video
-from rallyvision.device import resolve_device
-from rallyvision.inference.video import probe_video, run_video_inference
-from rallyvision.models import build_model
+from rallyvision.ball_tracking.data.synthetic import generate_video
+from rallyvision.common.device import resolve_device
+from rallyvision.ball_tracking.inference.video import probe_video, run_video_inference
+from rallyvision.ball_tracking.model import build_model
 
 
 @pytest.fixture(scope="module")

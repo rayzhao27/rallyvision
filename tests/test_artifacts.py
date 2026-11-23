@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from rallyvision.artifacts import collect_run_artifacts, format_bundle
-from rallyvision.paths import RunPaths
-from rallyvision.utils import write_json
+from rallyvision.common.artifacts import collect_run_artifacts, format_bundle
+from rallyvision.common.paths import RunPaths
+from rallyvision.common.utils import write_json
 
 
 def _fake_run(root: Path) -> RunPaths:

@@ -11,10 +11,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from rallyvision.config import load_config  # noqa: E402
-from rallyvision.data.manifest import DatasetManifest  # noqa: E402
-from rallyvision.data.prepare import prepare_dataset  # noqa: E402
-from rallyvision.data.synthetic import generate_dataset  # noqa: E402
+from rallyvision.common.config import load_config  # noqa: E402
+from rallyvision.ball_tracking.data.manifest import DatasetManifest  # noqa: E402
+from rallyvision.ball_tracking.data.prepare import prepare_dataset  # noqa: E402
+from rallyvision.ball_tracking.data.synthetic import generate_dataset  # noqa: E402
 
 # Small enough to stay fast, still divisible by the model's stride of 8.
 TEST_HEIGHT = 72
@@ -30,7 +30,7 @@ def repo_root() -> Path:
 @pytest.fixture
 def base_config():
     """The real config.yaml, shrunk to test scale."""
-    cfg = load_config(REPO_ROOT / "config.yaml")
+    cfg = load_config(REPO_ROOT / "configs" / "ball_tracking.yaml")
     cfg["data.input_height"] = TEST_HEIGHT
     cfg["data.input_width"] = TEST_WIDTH
     cfg["data.num_frames"] = TEST_FRAMES

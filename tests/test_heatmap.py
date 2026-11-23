@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from rallyvision.data.heatmap import decode_batch, decode_peak, render_gaussian
+from rallyvision.common.heatmap import decode_batch, decode_peak, render_gaussian
 
 
 def test_gaussian_peaks_at_the_requested_point():

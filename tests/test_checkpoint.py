@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import torch
 
-from rallyvision.checkpoint import (
+from rallyvision.common.checkpoint import (
     TrainingState,
     find_resume_checkpoint,
     load_model_weights,
@@ -10,7 +10,7 @@ from rallyvision.checkpoint import (
     restore_training,
     save_checkpoint,
 )
-from rallyvision.models.tracknet import TrackNet
+from rallyvision.common.tracknet import TrackNet
 
 
 def _fixture():
