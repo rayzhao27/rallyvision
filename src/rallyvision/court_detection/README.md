@@ -8,6 +8,9 @@
 
 This module predicts 14 court keypoints as heatmaps and estimates a per-frame mapping between court coordinates and image pixels. It has its own data preparation, training, evaluation, and inference code. The [RallyVision pipeline](../../../README.md) uses valid court geometry to filter ball candidates and place predicted bounces on a top-down court.
 
+**Demo: Court detection**  
+*The GIF below may take a moment to load.*
+
 ![Court geometry on tennis broadcast footage](./pics/court_tracking_demo.gif)
 
 *Alcaraz vs. Sinner broadcast footage. The points and court lines are projected from each frame's estimated homography; they are not necessarily individual keypoint detections. This is a qualitative example.*

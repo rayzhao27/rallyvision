@@ -8,6 +8,9 @@
 
 This module predicts when a bounce occurs directly from video. Its final model uses an externally pretrained E2E-Spot visual backbone and a Temporal Transformer trained for this project. The event detector does not require ball tracks or court calibration; the [RallyVision pipeline](../../../README.md) uses those separate outputs to estimate where a detected bounce occurred.
 
+**Demo: Bounce event detection**  
+*The GIF below may take a moment to load.*
+
 ![Bounce event detection on tennis broadcast footage](./pics/bounce_event_demo.gif)
 
 *Alcaraz vs. Sinner broadcast footage. The label shows a predicted bounce event and its predicted court side. The circle marks a ball position selected from the separate tracking output near that event; it remains in place briefly for readability. This visualization is qualitative and does not validate bounce-location accuracy.*

@@ -12,6 +12,9 @@ RallyVision explores how to analyze tennis broadcast footage through three indep
 
 The integrated pipeline combines their outputs to detect bounce events and estimate their locations on a top-down court. The project documents not only the final models, but also the diagnostics, oracle experiments, failed approaches, and engineering decisions that shaped them.
 
+**Demo: RallyVision in action**  
+*The GIF below may take a moment to load.*
+
 ![RallyVision bounce detection demo](./pics/alcaraz_vs_sinner_bounces.gif)
 
 *Alcaraz vs. Sinner broadcast footage analyzed by RallyVision. The model detects 11 of the 12 annotated first bounces in this rally, missing the final drop shot bounce. Detected events are mapped onto a top-down court; the estimated locations have not been validated against ground truth and must not be used for line calling.*

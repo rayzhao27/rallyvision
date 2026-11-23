@@ -8,6 +8,9 @@
 
 This module detects a small, fast-moving tennis ball with a TrackNet-style model and follows it using motion-aware selection. It includes data preparation, training, evaluation, inference, and diagnostic experiments. The final 1280×720 model is integrated with the court and bounce detection subsystems in the [RallyVision pipeline](../../../README.md).
 
+**Demo: Ball tracking**  
+*The GIF below may take a moment to load.*
+
 ![Ball tracking demo](./pics/ball_tracking_1280.gif)
 
 *Alcaraz vs. Sinner broadcast footage. This visualization uses the 1280 model and the integrated pipeline's court gating and motion-aware ball selection. It is an illustrative example, not an accuracy measurement.*
